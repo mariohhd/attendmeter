@@ -1,0 +1,419 @@
+---
+// EOI Course Creation Form Component
+interface Props {
+  isVisible: boolean
+}
+
+const { isVisible } = Astro.props
+---
+
+<div id="eoi-course-modal" class={`modal ${isVisible ? 'show' : ''}`}>
+  <div class="modal-content eoi-modal">
+    <div class="modal-header">
+      <h3>🎓 Crear Curso EOI</h3>
+      <button class="modal-close" id="close-eoi-modal">&times;</button>
+    </div>
+    
+    <form id="eoi-course-form" class="eoi-form">
+      <div class="form-section">
+        <h4>📚 Información del Curso</h4>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eoi-language">Idioma</label>
+            <select id="eoi-language" name="language" required>
+              <option value="">Seleccionar idioma</option>
+              <option value="Inglés">Inglés</option>
+              <option value="Francés">Francés</option>
+              <option value="Alemán">Alemán</option>
+              <option value="Italiano">Italiano</option>
+              <option value="Portugués">Portugués</option>
+              <option value="Árabe">Árabe</option>
+              <option value="Chino">Chino</option>
+              <option value="Japonés">Japonés</option>
+              <option value="Ruso">Ruso</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="eoi-level">Nivel</label>
+            <select id="eoi-level" name="level" required>
+              <option value="">Seleccionar nivel</option>
+              <option value="A1">A1 - Básico</option>
+              <option value="A2">A2 - Elemental</option>
+              <option value="B1">B1 - Intermedio</option>
+              <option value="B2">B2 - Intermedio Alto</option>
+              <option value="C1">C1 - Avanzado</option>
+              <option value="C2">C2 - Superior</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eoi-teacher">Profesor/a</label>
+            <input type="text" id="eoi-teacher" name="teacher" required placeholder="Nombre del profesor">
+          </div>
+          
+          <div class="form-group">
+            <label for="eoi-classroom">Aula (opcional)</label>
+            <input type="text" id="eoi-classroom" name="classroom" placeholder="Ej: 201, Aula Magna">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="eoi-color">Color del curso</label>
+          <div class="color-selector">
+            <input type="radio" name="color" value="#3b82f6" id="color-blue" checked>
+            <label for="color-blue" class="color-option" style="background-color: #3b82f6"></label>
+            
+            <input type="radio" name="color" value="#10b981" id="color-green">
+            <label for="color-green" class="color-option" style="background-color: #10b981"></label>
+            
+            <input type="radio" name="color" value="#f59e0b" id="color-amber">
+            <label for="color-amber" class="color-option" style="background-color: #f59e0b"></label>
+            
+            <input type="radio" name="color" value="#ef4444" id="color-red">
+            <label for="color-red" class="color-option" style="background-color: #ef4444"></label>
+            
+            <input type="radio" name="color" value="#8b5cf6" id="color-purple">
+            <label for="color-purple" class="color-option" style="background-color: #8b5cf6"></label>
+            
+            <input type="radio" name="color" value="#f97316" id="color-orange">
+            <label for="color-orange" class="color-option" style="background-color: #f97316"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>🗓️ Horario y Calendario</h4>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Días de clase</label>
+            <div class="days-selector">
+              <input type="checkbox" name="classDays" value="1" id="day-monday">
+              <label for="day-monday" class="day-option">Lun</label>
+              
+              <input type="checkbox" name="classDays" value="2" id="day-tuesday">
+              <label for="day-tuesday" class="day-option">Mar</label>
+              
+              <input type="checkbox" name="classDays" value="3" id="day-wednesday">
+              <label for="day-wednesday" class="day-option">Mié</label>
+              
+              <input type="checkbox" name="classDays" value="4" id="day-thursday">
+              <label for="day-thursday" class="day-option">Jue</label>
+              
+              <input type="checkbox" name="classDays" value="5" id="day-friday">
+              <label for="day-friday" class="day-option">Vie</label>
+            </div>
+            <small>Típico EOI: Lunes y Miércoles</small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eoi-start-time">Hora de inicio</label>
+            <select id="eoi-start-time" name="startTime" required>
+              <option value="">Seleccionar hora</option>
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+              <option value="18:00">18:00 (más común)</option>
+              <option value="19:00">19:00</option>
+              <option value="20:00">20:00</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="eoi-end-time">Hora de fin</label>
+            <select id="eoi-end-time" name="endTime" required>
+              <option value="">Seleccionar hora</option>
+              <option value="11:00">11:00</option>
+              <option value="12:00">12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="18:00">18:00</option>
+              <option value="19:00">19:00</option>
+              <option value="20:00">20:00 (más común)</option>
+              <option value="21:00">21:00</option>
+              <option value="22:00">22:00</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eoi-start-date">Fecha de inicio del curso</label>
+            <input type="date" id="eoi-start-date" name="startDate" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="eoi-end-date">Fecha de fin del curso</label>
+            <input type="date" id="eoi-end-date" name="endDate" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>🎯 Configuración de Asistencia</h4>
+        
+        <div class="form-group">
+          <label for="eoi-target">Objetivo personal de asistencia (%)</label>
+          <input 
+            type="number" 
+            id="eoi-target" 
+            name="target" 
+            min="65" 
+            max="100" 
+            value="85" 
+            placeholder="85"
+          >
+          <small>Mínimo legal EOI: 65%. Recomendado: 85% o más.</small>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="auto-holidays" name="autoHolidays" checked>
+            Incluir días festivos españoles automáticamente
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="generate-sessions" name="generateSessions" checked>
+            Generar calendario completo de clases automáticamente
+          </label>
+          <small>Se crearán todas las sesiones del curso según el horario establecido</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-btn" id="cancel-eoi-course">Cancelar</button>
+        <button type="submit" class="primary-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+          </svg>
+          Crear Curso EOI
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .eoi-modal {
+    max-width: 700px;
+    width: 95%;
+  }
+
+  .eoi-form {
+    padding: 2rem;
+  }
+
+  .form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .form-section h4 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: white;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-group small {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-style: italic;
+  }
+
+  /* Color Selector */
+  .color-selector {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .color-selector input[type="radio"] {
+    display: none;
+  }
+
+  .color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .color-selector input[type="radio"]:checked + .color-option {
+    border-color: #374151;
+    transform: scale(1.1);
+  }
+
+  .color-selector input[type="radio"]:checked + .color-option::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    text-shadow: 0 0 3px rgba(0,0,0,0.5);
+  }
+
+  /* Days Selector */
+  .days-selector {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .days-selector input[type="checkbox"] {
+    display: none;
+  }
+
+  .day-option {
+    padding: 0.75rem 1rem;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-align: center;
+    min-width: 50px;
+    background: white;
+  }
+
+  .days-selector input[type="checkbox"]:checked + .day-option {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+  }
+
+  .day-option:hover {
+    border-color: #94a3b8;
+  }
+
+  /* Checkbox styling */
+  .form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+    transform: scale(1.2);
+  }
+
+  .form-group label:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .eoi-modal {
+      width: 98%;
+      margin: 1rem;
+    }
+
+    .eoi-form {
+      padding: 1rem;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+      flex-direction: column-reverse;
+    }
+
+    .color-selector {
+      justify-content: center;
+    }
+
+    .days-selector {
+      justify-content: center;
+    }
+  }
+
+  /* Animation */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal.show .eoi-modal {
+    animation: slideIn 0.3s ease-out;
+  }
+</style>
