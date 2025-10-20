@@ -5,14 +5,17 @@ import { calculateEOIAttendanceStats } from './eoi-calendar'
  * Calculate attendance statistics for a course
  */
 export function calculateAttendanceStats(course: Course): AttendanceStats {
-  const totalSessions = course.sessions.length
-  const attendedSessions = course.sessions.filter(session => session.attended).length
-  const attendancePercentage = totalSessions > 0 ? Math.round((attendedSessions / totalSessions) * 100) : 0
-  const missedSessions = totalSessions - attendedSessions
+  // Solo contar sesiones impartidas hasta la fecha actual
+  const now = new Date()
+  const impartedSessions = course.sessions.filter(session => new Date(session.date) <= now)
+  const totalImparted = impartedSessions.length
+  const attendedImparted = impartedSessions.filter(session => session.attended).length
+  const attendancePercentage = totalImparted > 0 ? Math.round((attendedImparted / totalImparted) * 100) : 0
+  const missedSessions = totalImparted - attendedImparted
 
   return {
-    totalSessions,
-    attendedSessions,
+    totalSessions: totalImparted,
+    attendedSessions: attendedImparted,
     attendancePercentage,
     missedSessions
   }

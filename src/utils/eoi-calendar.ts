@@ -9,32 +9,32 @@ import type {
 /**
  * Días festivos típicos en España (pueden configurarse por región)
  */
-export const SPANISH_HOLIDAYS_2024_2025 = [
-  // 2024
-  new Date('2024-01-01'), // Año Nuevo
-  new Date('2024-01-06'), // Reyes Magos
-  new Date('2024-03-28'), // Jueves Santo
-  new Date('2024-03-29'), // Viernes Santo
-  new Date('2024-05-01'), // Día del Trabajador
-  new Date('2024-08-15'), // Asunción de la Virgen
-  new Date('2024-10-12'), // Día de la Hispanidad
-  new Date('2024-11-01'), // Todos los Santos
-  new Date('2024-12-06'), // Día de la Constitución
-  new Date('2024-12-08'), // Inmaculada Concepción
-  new Date('2024-12-25'), // Navidad
-  
+export const SPANISH_HOLIDAYS_2025_2026 = [
   // 2025
   new Date('2025-01-01'), // Año Nuevo
   new Date('2025-01-06'), // Reyes Magos
-  new Date('2025-04-17'), // Jueves Santo
-  new Date('2025-04-18'), // Viernes Santo
+  new Date('2025-03-28'), // Jueves Santo
+  new Date('2025-03-29'), // Viernes Santo
   new Date('2025-05-01'), // Día del Trabajador
   new Date('2025-08-15'), // Asunción de la Virgen
-  new Date('2025-10-12'), // Día de la Hispanidad
-  new Date('2025-11-01'), // Todos los Santos
+  new Date('2025-10-13'), // Día de la Hispanidad
+  new Date('2025-11-03'), // Todos los Santos
   new Date('2025-12-06'), // Día de la Constitución
   new Date('2025-12-08'), // Inmaculada Concepción
   new Date('2025-12-25'), // Navidad
+  
+  // 2026
+  new Date('2026-01-01'), // Año Nuevo
+  new Date('2026-01-06'), // Reyes Magos
+  new Date('2026-04-17'), // Jueves Santo
+  new Date('2026-04-18'), // Viernes Santo
+  new Date('2026-05-01'), // Día del Trabajador
+  new Date('2026-08-15'), // Asunción de la Virgen
+  new Date('2026-10-12'), // Día de la Hispanidad
+  new Date('2026-11-01'), // Todos los Santos
+  new Date('2026-12-06'), // Día de la Constitución
+  new Date('2026-12-08'), // Inmaculada Concepción
+  new Date('2026-12-25'), // Navidad
 ]
 
 /**
@@ -44,15 +44,14 @@ export function generateAcademicCalendar(
   startDate: Date,
   endDate: Date,
   classDays: number[], // [1, 3] para lunes y miércoles
-  holidays: Date[] = SPANISH_HOLIDAYS_2024_2025
+  holidays: Date[] = SPANISH_HOLIDAYS_2025_2026
 ): AcademicCalendar {
   return {
     startDate,
     endDate,
     holidays,
     teacherAbsentDays: [],
-    classDays,
-    makeupClasses: []
+    classDays
   }
 }
 
@@ -90,17 +89,6 @@ export function generateScheduledSessions(
     currentDate.setDate(currentDate.getDate() + 1)
   }
   
-  // Añadir clases de recuperación
-  calendar.makeupClasses?.forEach(makeup => {
-    sessions.push({
-      id: generateId(),
-      date: new Date(makeup.date),
-      attended: false,
-      wasScheduled: true,
-      sessionType: 'makeup',
-      notes: `Clase de recuperación: ${makeup.reason}`
-    })
-  })
   
   return sessions.sort((a, b) => a.date.getTime() - b.date.getTime())
 }
@@ -109,34 +97,34 @@ export function generateScheduledSessions(
  * Calcular estadísticas de asistencia para EOI (excluyendo días no lectivos)
  */
 export function calculateEOIAttendanceStats(course: EOICourse): EOIAttendanceStats {
-  const allSessions = course.sessions
-  
+  const now = new Date()
+  const allSessions = course.sessions.filter(session => session.date <= now)
+
   // Sesiones que realmente cuentan para el porcentaje (excluir canceladas)
   const validSessions = allSessions.filter(session => 
     session.sessionType !== 'cancelled' && 
     !session.isHoliday && 
     !session.teacherAbsent
   )
-  
+
   const attendedSessions = validSessions.filter(session => session.attended).length
   const cancelledSessions = allSessions.filter(session => 
     session.sessionType === 'cancelled' || 
     session.isHoliday || 
     session.teacherAbsent
   ).length
-  
-  const makeupSessions = allSessions.filter(session => session.sessionType === 'makeup').length
+
   const examSessions = allSessions.filter(session => session.sessionType === 'exam').length
-  
+
   const totalSessions = allSessions.length
   const scheduledSessions = validSessions.length
   const missedSessions = scheduledSessions - attendedSessions
-  
+
   // Porcentaje basado solo en sesiones válidas
   const validAttendancePercentage = scheduledSessions > 0 
     ? Math.round((attendedSessions / scheduledSessions) * 100) 
     : 0
-  
+
   // Porcentaje tradicional (incluyendo todo)
   const attendancePercentage = totalSessions > 0 
     ? Math.round((attendedSessions / totalSessions) * 100) 
@@ -152,7 +140,6 @@ export function calculateEOIAttendanceStats(course: EOICourse): EOIAttendanceSta
     missedSessions,
     scheduledSessions,
     cancelledSessions,
-    makeupSessions,
     examSessions,
     validAttendancePercentage,
     attendanceHistory
@@ -220,42 +207,6 @@ export function markTeacherAbsent(
     }
     return session
   })
-  
-  return {
-    ...course,
-    academicCalendar: updatedCalendar,
-    sessions: updatedSessions
-  }
-}
-
-/**
- * Añadir clase de recuperación
- */
-export function addMakeupClass(
-  course: EOICourse,
-  date: Date,
-  reason: string,
-  generateId: () => string
-): EOICourse {
-  const updatedCalendar = {
-    ...course.academicCalendar,
-    makeupClasses: [
-      ...(course.academicCalendar.makeupClasses || []),
-      { date, reason }
-    ]
-  }
-  
-  const makeupSession: EOIClassSession = {
-    id: generateId(),
-    date: new Date(date),
-    attended: false,
-    wasScheduled: true,
-    sessionType: 'makeup',
-    notes: `Clase de recuperación: ${reason}`
-  }
-  
-  const updatedSessions = [...course.sessions, makeupSession]
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
   
   return {
     ...course,

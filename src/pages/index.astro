@@ -1,37 +1,36 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import CourseCard from '../components/CourseCard.astro'
-import EOICourseCard from '../components/EOICourseCard.astro'
-import EOICourseForm from '../components/EOICourseForm.astro'
+import CoursesGrid from '../components/CoursesGrid.jsx'
+import EOICoursesGrid from '../components/EOICoursesGrid.jsx'
+import PassedClassesManager from '../components/PassedClassesManager.jsx'
 import type { Course, EOICourse } from '../types/attendance'
-import { calculateAttendanceStats, calculateEOIStats } from '../utils/attendance'
 import { 
   generateAcademicCalendar, 
   generateScheduledSessions, 
-  SPANISH_HOLIDAYS_2024_2025 
+  SPANISH_HOLIDAYS_2025_2026 
 } from '../utils/eoi-calendar'
 
 // Sample EOI course for demonstration
 const sampleEOICourse: EOICourse = {
   id: 'eoi_course_1',
-  name: 'Inglés B2',
+  name: 'Inglés B2.2',
   color: '#3b82f6',
   totalSessions: 60,
   target: 85,
-  level: 'B2',
+  level: 'B2.2',
   language: 'Inglés',
-  teacher: 'María González',
+  teacherEmail: 'elena.garcia@educa.madrid.org',
   classroom: '201',
   schedule: {
     days: [1, 3], // Lunes y Miércoles
-    startTime: '18:00',
-    endTime: '20:00'
+    startTime: '18:40',
+    endTime: '21:00'
   },
   academicCalendar: generateAcademicCalendar(
-    new Date('2024-09-15'),
-    new Date('2025-06-15'),
+    new Date('2025-09-15'),
+    new Date('2026-06-15'),
     [1, 3], // Lunes y Miércoles
-    SPANISH_HOLIDAYS_2024_2025
+    SPANISH_HOLIDAYS_2025_2026
   ),
   sessions: [] // Se generarán automáticamente
 }
@@ -93,7 +92,7 @@ const sampleCourses: Course[] = [
     <header class="app-header">
       <div class="header-content">
         <h1 class="app-title">
-          <span class="title-icon">📊</span>
+          <img src="/src/assets/attendmeter.png" alt="AttendMeter Logo" style="height: 48px; vertical-align: middle; margin-right: 1rem;" />
           AttendMeter
         </h1>
         <p class="app-subtitle">
@@ -131,15 +130,23 @@ const sampleCourses: Course[] = [
       </button>
     </div>
 
-    <!-- EOI Courses Section -->
+    <script>
+      // Sample EOI course data injected from Astro
+      const sampleEOICourse = /** @type {any} */ (JSON.parse(`{{JSON.stringify(sampleEOICourse)}}`));
+      // Initialize EOI courses in localStorage with sample if empty
+      try {
+        const eoiCourses = localStorage.getItem('eoiCourses');
+        if (!eoiCourses || JSON.parse(eoiCourses).length === 0) {
+          localStorage.setItem('eoiCourses', JSON.stringify([sampleEOICourse]));
+          localStorage.setItem(`eoi_sessions_${sampleEOICourse.id}`, JSON.stringify(sampleEOICourse.sessions));
+        }
+      } catch (e) { /* ignore */ }
+    </script>
+    <!-- EOI Courses Section (React Island) -->
     <div class="courses-container" id="eoi-courses-container">
       <div class="courses-grid eoi-grid">
-        {(() => {
-          const eoiStats = calculateEOIStats(sampleEOICourse)
-          return <EOICourseCard course={sampleEOICourse} stats={eoiStats} />
-        })()}
+        <EOICoursesGrid client:load sampleEOICourse={sampleEOICourse} />
       </div>
-      
       <div class="empty-state eoi-empty" id="eoi-empty-state" style="display: none;">
         <div class="empty-icon">🎓</div>
         <h3>No hay cursos EOI</h3>
@@ -147,96 +154,6 @@ const sampleCourses: Course[] = [
         <button class="primary-btn" onclick="document.getElementById('add-eoi-course-btn')?.click()">
           Crear Curso EOI
         </button>
-      </div>
-    </div>
-
-    <!-- General Courses Section -->
-    <div class="courses-container" id="general-courses-container" style="display: none;">
-      <div class="courses-grid">
-        {sampleCourses.map(course => {
-          const stats = calculateAttendanceStats(course)
-          return (
-            <CourseCard course={course} stats={stats} />
-          )
-        })}
-      </div>
-      
-      <div class="empty-state" id="general-empty-state" style="display: none;">
-        <div class="empty-icon">📚</div>
-        <h3>No hay cursos generales</h3>
-        <p>Añade tu primer curso para comenzar a rastrear la asistencia</p>
-        <button class="primary-btn" onclick="document.getElementById('add-course-btn')?.click()">
-          Añadir Primer Curso
-        </button>
-      </div>
-    </div>
-
-    <!-- EOI Course Form -->
-    <EOICourseForm isVisible={false} />
-
-    <!-- Add Course Modal -->
-    <div id="add-course-modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Añadir Nuevo Curso</h3>
-          <button class="modal-close" id="close-modal">&times;</button>
-        </div>
-        <form id="add-course-form" class="modal-form">
-          <div class="form-group">
-            <label for="course-name">Nombre del Curso</label>
-            <input type="text" id="course-name" name="courseName" required placeholder="ej: Matemáticas Avanzadas">
-          </div>
-          <div class="form-group">
-            <label for="course-color">Color</label>
-            <select id="course-color" name="courseColor">
-              <option value="#3b82f6">Azul</option>
-              <option value="#10b981">Verde</option>
-              <option value="#f59e0b">Amarillo</option>
-              <option value="#ef4444">Rojo</option>
-              <option value="#8b5cf6">Morado</option>
-              <option value="#f97316">Naranja</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="course-target">Objetivo de Asistencia % (opcional)</label>
-            <input type="number" id="course-target" name="courseTarget" min="0" max="100" placeholder="85">
-          </div>
-          <div class="form-actions">
-            <button type="button" class="secondary-btn" id="cancel-add-course">Cancelar</button>
-            <button type="submit" class="primary-btn">Añadir Curso</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Add Session Modal -->
-    <div id="add-session-modal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Añadir Sesión</h3>
-          <button class="modal-close" id="close-session-modal">&times;</button>
-        </div>
-        <form id="add-session-form" class="modal-form">
-          <div class="form-group">
-            <label for="session-date">Fecha</label>
-            <input type="date" id="session-date" name="sessionDate" required>
-          </div>
-          <div class="form-group">
-            <label for="session-attended">Asistencia</label>
-            <select id="session-attended" name="sessionAttended">
-              <option value="true">Presente</option>
-              <option value="false">Ausente</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="session-notes">Notas (opcional)</label>
-            <input type="text" id="session-notes" name="sessionNotes" placeholder="ej: Día de examen, Conferencia especial">
-          </div>
-          <div class="form-actions">
-            <button type="button" class="secondary-btn" id="cancel-add-session">Cancelar</button>
-            <button type="submit" class="primary-btn">Añadir Sesión</button>
-          </div>
-        </form>
       </div>
     </div>
   </main>
@@ -256,6 +173,7 @@ const sampleCourses: Course[] = [
     border-radius: 12px;
     backdrop-filter: blur(10px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: none;
   }
 
   .tab-btn {
@@ -473,211 +391,3 @@ const sampleCourses: Course[] = [
     animation: slideUp 0.5s ease-out;
   }
 </style>
-
-<script>
-  import type { EOICourse } from '../types/attendance'
-  import { calculateEOIStats } from '../utils/attendance'
-  import { 
-    generateAcademicCalendar, 
-    generateScheduledSessions, 
-    SPANISH_HOLIDAYS_2024_2025 
-  } from '../utils/eoi-calendar'
-
-  // Initialize the app when DOM is loaded
-  document.addEventListener('DOMContentLoaded', () => {
-    initializeApp()
-    setupEventListeners()
-    setupTabSwitching()
-    showSampleData()
-  })
-
-  function initializeApp() {
-    // Set today's date as default for session date
-    const sessionDateInput = document.getElementById('session-date') as HTMLInputElement
-    if (sessionDateInput) {
-      sessionDateInput.valueAsDate = new Date()
-    }
-
-    // Set default dates for EOI course form
-    const eoiStartDate = document.getElementById('eoi-start-date') as HTMLInputElement
-    const eoiEndDate = document.getElementById('eoi-end-date') as HTMLInputElement
-    
-    if (eoiStartDate && eoiEndDate) {
-      const today = new Date()
-      const startOfYear = new Date(today.getFullYear(), 8, 15) // 15 septiembre
-      const endOfYear = new Date(today.getFullYear() + 1, 5, 15) // 15 junio siguiente
-      
-      eoiStartDate.valueAsDate = startOfYear
-      eoiEndDate.valueAsDate = endOfYear
-    }
-
-    // Pre-select Monday and Wednesday for EOI
-    const mondayCheckbox = document.getElementById('day-monday') as HTMLInputElement
-    const wednesdayCheckbox = document.getElementById('day-wednesday') as HTMLInputElement
-    
-    if (mondayCheckbox) mondayCheckbox.checked = true
-    if (wednesdayCheckbox) wednesdayCheckbox.checked = true
-  }
-
-  function setupTabSwitching() {
-    const tabButtons = document.querySelectorAll('.tab-btn')
-    const eoiContainer = document.getElementById('eoi-courses-container')
-    const generalContainer = document.getElementById('general-courses-container')
-
-    tabButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const tab = button.getAttribute('data-tab')
-        
-        // Update active tab
-        tabButtons.forEach(btn => btn.classList.remove('active'))
-        button.classList.add('active')
-        
-        // Show/hide containers
-        if (tab === 'eoi') {
-          eoiContainer!.style.display = 'block'
-          generalContainer!.style.display = 'none'
-        } else {
-          eoiContainer!.style.display = 'none'
-          generalContainer!.style.display = 'block'
-        }
-      })
-    })
-  }
-
-  function setupEventListeners() {
-    // EOI course modal
-    const addEOICourseBtn = document.getElementById('add-eoi-course-btn')
-    const eoiCourseModal = document.getElementById('eoi-course-modal')
-    const closeEOIModal = document.getElementById('close-eoi-modal')
-    const cancelEOICourse = document.getElementById('cancel-eoi-course')
-
-    addEOICourseBtn?.addEventListener('click', () => {
-      eoiCourseModal?.classList.add('show')
-    })
-
-    closeEOIModal?.addEventListener('click', () => {
-      eoiCourseModal?.classList.remove('show')
-    })
-
-    cancelEOICourse?.addEventListener('click', () => {
-      eoiCourseModal?.classList.remove('show')
-    })
-
-    // Regular course modal
-    const addCourseBtn = document.getElementById('add-course-btn')
-    const addCourseModal = document.getElementById('add-course-modal')
-    const closeModal = document.getElementById('close-modal')
-    const cancelAddCourse = document.getElementById('cancel-add-course')
-
-    addCourseBtn?.addEventListener('click', () => {
-      addCourseModal?.classList.add('show')
-    })
-
-    closeModal?.addEventListener('click', () => {
-      addCourseModal?.classList.remove('show')
-    })
-
-    cancelAddCourse?.addEventListener('click', () => {
-      addCourseModal?.classList.remove('show')
-    })
-
-    // Session modal
-    const addSessionModal = document.getElementById('add-session-modal')
-    const closeSessionModal = document.getElementById('close-session-modal')
-    const cancelAddSession = document.getElementById('cancel-add-session')
-
-    closeSessionModal?.addEventListener('click', () => {
-      addSessionModal?.classList.remove('show')
-    })
-
-    cancelAddSession?.addEventListener('click', () => {
-      addSessionModal?.classList.remove('show')
-    })
-
-    // Export data functionality
-    const exportBtn = document.getElementById('export-btn')
-    exportBtn?.addEventListener('click', () => {
-      const data = {
-        courses: [],
-        eoiCourses: [],
-        exportDate: new Date().toISOString(),
-        appVersion: '2.0.0'
-      }
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `attendmeter-eoi-backup-${new Date().toISOString().split('T')[0]}.json`
-      a.click()
-      URL.revokeObjectURL(url)
-    })
-
-    // Close modals when clicking outside
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement
-      if (target.classList.contains('modal')) {
-        target.classList.remove('show')
-      }
-    })
-
-    // Handle EOI form submission
-    const eoiForm = document.getElementById('eoi-course-form')
-    eoiForm?.addEventListener('submit', handleEOICourseCreation)
-  }
-
-  function handleEOICourseCreation(e: Event) {
-    e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const formData = new FormData(form)
-    
-    // Get form values
-    const language = formData.get('language') as string
-    const level = formData.get('level') as string
-    const teacher = formData.get('teacher') as string
-    const classroom = formData.get('classroom') as string
-    const color = formData.get('color') as string
-    const target = parseInt(formData.get('target') as string) || 85
-    const startTime = formData.get('startTime') as string
-    const endTime = formData.get('endTime') as string
-    const startDate = new Date(formData.get('startDate') as string)
-    const endDate = new Date(formData.get('endDate') as string)
-    
-    // Get selected days
-    const classDays = Array.from(formData.getAll('classDays')).map(day => parseInt(day as string))
-    
-    if (classDays.length === 0) {
-      alert('Por favor selecciona al menos un día de clase')
-      return
-    }
-
-    // Create the course name
-    const courseName = `${language} ${level}`
-
-    console.log('Creando curso EOI:', {
-      name: courseName,
-      language,
-      level,
-      teacher,
-      classroom,
-      color,
-      target,
-      schedule: { days: classDays, startTime, endTime },
-      period: { startDate, endDate }
-    })
-
-    // Here you would normally save to localStorage or send to a server
-    alert(`¡Curso EOI "${courseName}" creado exitosamente!\n\nProfesor: ${teacher}\nHorario: ${classDays.map(d => ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d]).join(' y ')} ${startTime}-${endTime}\nPeriodo: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`)
-
-    form.reset()
-    document.getElementById('eoi-course-modal')?.classList.remove('show')
-  }
-
-  function showSampleData() {
-    console.log('AttendMeter EOI app initialized with sample data')
-    console.log('Features available:')
-    console.log('- Smart attendance calculation (excludes holidays/teacher absences)')
-    console.log('- EOI compliance tracking (65% minimum)')
-    console.log('- Automatic calendar generation')
-    console.log('- Monthly progress tracking')
-  }
-</script>

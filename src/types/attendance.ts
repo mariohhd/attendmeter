@@ -12,7 +12,7 @@ export interface EOIClassSession extends ClassSession {
   wasScheduled: boolean // Si la clase estaba programada para este día
   teacherAbsent?: boolean // Si el profesor faltó
   isHoliday?: boolean // Si es día festivo
-  sessionType: 'regular' | 'makeup' | 'exam' | 'cancelled'
+  sessionType: 'regular'  | 'exam' | 'cancelled'
 }
 
 export interface AcademicCalendar {
@@ -21,10 +21,6 @@ export interface AcademicCalendar {
   holidays: Date[]
   teacherAbsentDays: Date[]
   classDays: number[] // Array of weekdays (0=Sunday, 1=Monday, etc.)
-  makeupClasses?: Array<{
-    date: Date
-    reason: string
-  }>
 }
 
 export interface Course {
@@ -42,7 +38,7 @@ export interface EOICourse extends Omit<Course, 'sessions'> {
   academicCalendar: AcademicCalendar
   level: string // A1, A2, B1, B2, C1, C2
   language: string // English, French, German, etc.
-  teacher: string
+  teacherEmail?: string
   classroom?: string
   schedule: {
     days: number[] // Days of the week (1=Monday, 3=Wednesday)
@@ -62,7 +58,6 @@ export interface AttendanceStats {
 export interface EOIAttendanceStats extends AttendanceStats {
   scheduledSessions: number // Total sessions that were actually scheduled
   cancelledSessions: number // Sessions cancelled due to holidays/teacher absence
-  makeupSessions: number
   examSessions: number
   validAttendancePercentage: number // Percentage excluding cancelled sessions
   attendanceHistory: Array<{
@@ -87,7 +82,7 @@ export interface NewSession {
 }
 
 export interface NewEOISession extends NewSession {
-  sessionType: 'regular' | 'makeup' | 'exam' | 'cancelled'
+  sessionType: 'regular' | 'exam' | 'cancelled'
   teacherAbsent?: boolean
   isHoliday?: boolean
 }
