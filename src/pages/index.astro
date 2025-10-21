@@ -1,8 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import CoursesGrid from '../components/CoursesGrid.jsx'
 import EOICoursesGrid from '../components/EOICoursesGrid.jsx'
-import PassedClassesManager from '../components/PassedClassesManager.jsx'
 import type { Course, EOICourse } from '../types/attendance'
 import { 
   generateAcademicCalendar, 
@@ -92,7 +90,7 @@ const sampleCourses: Course[] = [
     <header class="app-header">
       <div class="header-content">
         <h1 class="app-title">
-          <img src="/src/assets/attendmeter.png" alt="AttendMeter Logo" style="height: 48px; vertical-align: middle; margin-right: 1rem;" />
+          <img src="attendmeter.png" alt="AttendMeter Logo" style="height: 48px; vertical-align: middle; margin-right: 1rem;" />
           AttendMeter
         </h1>
         <p class="app-subtitle">
