@@ -21,11 +21,17 @@ export const SPANISH_HOLIDAYS_2025_2026 = [
   new Date('2025-11-03'), // Todos los Santos
   new Date('2025-12-06'), // Día de la Constitución
   new Date('2025-12-08'), // Inmaculada Concepción
+  new Date('2025-12-22'), // Navidad
+  new Date('2025-12-24'), // Navidad
   new Date('2025-12-25'), // Navidad
+  new Date('2025-12-29'), // Navidad
+  new Date('2025-12-31'), // Navidad
   
   // 2026
   new Date('2026-01-01'), // Año Nuevo
+  new Date('2026-01-05'), // Reyes Magos
   new Date('2026-01-06'), // Reyes Magos
+  new Date('2026-01-07'), // Reyes Magos
   new Date('2026-04-17'), // Jueves Santo
   new Date('2026-04-18'), // Viernes Santo
   new Date('2026-05-01'), // Día del Trabajador

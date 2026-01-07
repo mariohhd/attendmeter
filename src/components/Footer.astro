@@ -3,7 +3,7 @@
 	<div class="footer-content">
 		<div class="footer-section">
 			<h4>AttendMeter</h4>
-			<p>Control de asistencia inteligente para estudiantes de EOI</p>
+			<p>Control de asistencia inteligente para estudiantes</p>
 		</div>
 		<div class="footer-section">
 			<h5>Características</h5>
@@ -13,7 +13,7 @@
 				<li>Gestión de festivos y ausencias</li>
 			</ul>
 		</div>
-		<div class="footer-section">
+		<div class="footer-section hidden">
 			<h5>Recursos</h5>
 			<ul>
 				<li><a href="#" target="_blank">Guía de uso</a></li>
@@ -23,12 +23,36 @@
 		</div>
 	</div>
 	<div class="footer-bottom">
-		<p>&copy; 2025 AttendMeter. Hecho con ❤️ para estudiantes de idiomas.</p>
+		<p>&copy; 2025 mariohhd.</p>
+		<a
+			class="github-link"
+			href="https://github.com/mariohhd"
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="GitHub Profile"
+			title="GitHub"
+		>
+			<!-- GitHub Icon (Octocat mark) -->
+			<svg
+				aria-hidden="true"
+				viewBox="0 0 24 24"
+				width="24"
+				height="24"
+				fill="currentColor"
+				role="img"
+			>
+				<path d="M12 2C6.477 2 2 6.477 2 12c0 4.419 2.865 8.166 6.839 9.49.5.093.683-.217.683-.483 0-.237-.009-.866-.014-1.7-2.782.604-3.369-1.342-3.369-1.342-.455-1.156-1.11-1.465-1.11-1.465-.907-.62.069-.607.069-.607 1.003.071 1.531 1.031 1.531 1.031.891 1.526 2.338 1.085 2.907.83.091-.646.349-1.085.636-1.335-2.221-.253-4.556-1.111-4.556-4.944 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.273.098-2.656 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0 1 12 7.5c.85.004 1.705.116 2.503.34 1.91-1.294 2.75-1.025 2.75-1.025.545 1.383.202 2.403.099 2.656.64.698 1.028 1.591 1.028 2.682 0 3.842-2.339 4.688-4.566 4.938.358.309.678.919.678 1.854 0 1.338-.012 2.416-.012 2.745 0 .269.18.582.69.482A10.002 10.002 0 0 0 22 12c0-5.523-4.477-10-10-10Z"/>
+			</svg>
+		</a>
 	</div>
 </footer>
 
 <style>
 	/* Footer Styles */
+
+	.hidden {
+		display: none;
+	}
 	.app-footer {
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 		color: white;
@@ -89,6 +113,23 @@
 		margin-top: 2rem;
 		padding-top: 1rem;
 		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+	
+	.github-link {
+		color: #e2e8f0;
+		display: inline-flex;
+		align-items: center;
+		transition: color 0.2s ease, transform 0.2s ease;
+		cursor: pointers;
+	}
+	
+	.github-link:hover {
+		color: #ffffff;
+		transform: translateY(-1px);
 	}
 	
 	.footer-bottom p {

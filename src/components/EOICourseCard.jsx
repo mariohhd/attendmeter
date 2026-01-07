@@ -539,9 +539,11 @@ export default function EOICourseCard({ course }) {
           <span className="language-level">
             <strong>Idioma:</strong> {course.language} | <strong>Nivel:</strong> {course.level}
           </span>
+          {course.teacher && (
           <span className="teacher">
             <strong>Docente:</strong> {course.teacher}
           </span>
+          )}
           {course.teacherEmail && (
             <span className="teacher-email">
               <strong>Email:</strong> <a href={`mailto:${course.teacherEmail}`}>{course.teacherEmail}</a>
@@ -630,7 +632,7 @@ export default function EOICourseCard({ course }) {
                       </button>
                       {openMonth === month && (
                         <div className="month-sessions">
-                          {monthSessions.map(s => {
+                          {monthSessions.sort((a, b) => new Date(b.date) - new Date(a.date)).map(s => {
                             const status = getAttendanceStatus(s);
                             const displayInfo = getSessionDisplayInfo(s);
                             return (
