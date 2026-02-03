@@ -32,6 +32,8 @@ export const SPANISH_HOLIDAYS_2025_2026 = [
   new Date('2026-01-05'), // Reyes Magos
   new Date('2026-01-06'), // Reyes Magos
   new Date('2026-01-07'), // Reyes Magos
+  new Date('2026-02-11'), // C1
+  new Date('2026-02-09'), // C1
   new Date('2026-04-17'), // Jueves Santo
   new Date('2026-04-18'), // Viernes Santo
   new Date('2026-05-01'), // Día del Trabajador
