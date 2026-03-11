@@ -34,8 +34,8 @@ export const SPANISH_HOLIDAYS_2025_2026 = [
   new Date('2026-01-07'), // Reyes Magos
   new Date('2026-02-11'), // C1
   new Date('2026-02-09'), // C1
-  new Date('2026-04-17'), // Jueves Santo
-  new Date('2026-04-18'), // Viernes Santo
+  new Date('2026-03-30'), // Semana Santa
+  new Date('2026-04-01'), // Semana Santa
   new Date('2026-05-01'), // Día del Trabajador
   new Date('2026-08-15'), // Asunción de la Virgen
   new Date('2026-10-12'), // Día de la Hispanidad
@@ -58,7 +58,7 @@ export function generateAcademicCalendar(
     startDate,
     endDate,
     holidays,
-    teacherAbsentDays: [],
+    teacherAbsentDays: ['2026-03-16', '2026-03-18'].map(dateStr => new Date(dateStr)),
     classDays
   }
 }
